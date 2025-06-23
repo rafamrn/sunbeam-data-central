@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePowerPlants } from '@/hooks/usePowerPlants';
 import PerformanceGauge from '@/components/PerformanceGauge';
 import { useNavigate } from 'react-router-dom';
-import { Zap, Activity, AlertTriangle } from 'lucide-react';
+import { Zap, Activity, AlertTriangle, Building } from 'lucide-react';
 
 const Dashboard = () => {
   const { plants, alerts } = usePowerPlants();
@@ -38,7 +39,7 @@ const Dashboard = () => {
 
   const totalCapacity = plants.reduce((sum, plant) => sum + plant.capacity, 0);
   const totalCurrentPower = plants.reduce((sum, plant) => sum + plant.currentPower, 0);
-  const activePlants = plants.filter(p => p.status === 'active').length;
+  const totalPlants = plants.length;
   const plantsInAlarm = plants.filter(p => p.status === 'alarm').length;
 
   return (
@@ -64,7 +65,7 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Geração Atual</CardTitle>
+            <CardTitle className="text-sm font-medium">Potência Instantânea Total</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -79,12 +80,12 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usinas Ativas</CardTitle>
-            <Zap className="h-4 w-4 text-green-400" />
+            <CardTitle className="text-sm font-medium">Usinas Instaladas</CardTitle>
+            <Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-400">{activePlants}</div>
-            <p className="text-xs text-muted-foreground">de {plants.length} usinas</p>
+            <div className="text-2xl font-bold">{totalPlants}</div>
+            <p className="text-xs text-muted-foreground">Total de instalações</p>
           </CardContent>
         </Card>
 
@@ -101,99 +102,100 @@ const Dashboard = () => {
       </div>
 
       {/* Filtros */}
+      <div className="flex gap-2">
+        <Button
+          variant={statusFilter === 'all' ? 'default' : 'outline'}
+          onClick={() => setStatusFilter('all')}
+        >
+          Todas ({plants.length})
+        </Button>
+        <Button
+          variant={statusFilter === 'active' ? 'default' : 'outline'}
+          className={statusFilter === 'active' ? getStatusColor('active') : ''}
+          onClick={() => setStatusFilter('active')}
+        >
+          Ativas ({plants.filter(p => p.status === 'active').length})
+        </Button>
+        <Button
+          variant={statusFilter === 'alarm' ? 'default' : 'outline'}
+          className={statusFilter === 'alarm' ? getStatusColor('alarm') : ''}
+          onClick={() => setStatusFilter('alarm')}
+        >
+          Alarme ({plants.filter(p => p.status === 'alarm').length})
+        </Button>
+        <Button
+          variant={statusFilter === 'inactive' ? 'default' : 'outline'}
+          className={statusFilter === 'inactive' ? getStatusColor('inactive') : ''}
+          onClick={() => setStatusFilter('inactive')}
+        >
+          Inativas ({plants.filter(p => p.status === 'inactive').length})
+        </Button>
+      </div>
+
+      {/* Tabela de usinas */}
       <Card>
         <CardHeader>
-          <CardTitle>Filtros</CardTitle>
-          <CardDescription>Filtrar usinas por status</CardDescription>
+          <CardTitle>Usinas Instaladas</CardTitle>
+          <CardDescription>Lista completa das usinas em monitoramento</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex gap-2">
-            <Button
-              variant={statusFilter === 'all' ? 'default' : 'outline'}
-              onClick={() => setStatusFilter('all')}
-            >
-              Todas ({plants.length})
-            </Button>
-            <Button
-              variant={statusFilter === 'active' ? 'default' : 'outline'}
-              className={statusFilter === 'active' ? getStatusColor('active') : ''}
-              onClick={() => setStatusFilter('active')}
-            >
-              Ativas ({plants.filter(p => p.status === 'active').length})
-            </Button>
-            <Button
-              variant={statusFilter === 'alarm' ? 'default' : 'outline'}
-              className={statusFilter === 'alarm' ? getStatusColor('alarm') : ''}
-              onClick={() => setStatusFilter('alarm')}
-            >
-              Alarme ({plants.filter(p => p.status === 'alarm').length})
-            </Button>
-            <Button
-              variant={statusFilter === 'inactive' ? 'default' : 'outline'}
-              className={statusFilter === 'inactive' ? getStatusColor('inactive') : ''}
-              onClick={() => setStatusFilter('inactive')}
-            >
-              Inativas ({plants.filter(p => p.status === 'inactive').length})
-            </Button>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Localização</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Capacidade</TableHead>
+                <TableHead>Potência Atual</TableHead>
+                <TableHead>Performance</TableHead>
+                <TableHead>Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredPlants.map((plant) => (
+                <TableRow key={plant.id} className="cursor-pointer hover:bg-muted/50">
+                  <TableCell className="font-medium">{plant.name}</TableCell>
+                  <TableCell>{plant.location}</TableCell>
+                  <TableCell>
+                    <Badge className={getStatusColor(plant.status)}>
+                      {getStatusText(plant.status)}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{plant.capacity} kW</TableCell>
+                  <TableCell className="text-green-400">{plant.currentPower} kW</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <PerformanceGauge 
+                        value={plant.dailyPerformance} 
+                        title="D"
+                        size={40}
+                      />
+                      <PerformanceGauge 
+                        value={plant.weeklyPerformance} 
+                        title="S"
+                        size={40}
+                      />
+                      <PerformanceGauge 
+                        value={plant.monthlyPerformance} 
+                        title="M"
+                        size={40}
+                      />
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate(`/plants/${plant.id}`)}
+                    >
+                      Ver Detalhes
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
-
-      {/* Lista de usinas */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-        {filteredPlants.map((plant) => (
-          <Card 
-            key={plant.id} 
-            className="cursor-pointer hover:shadow-lg transition-shadow"
-            onClick={() => navigate(`/plants/${plant.id}`)}
-          >
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div>
-                  <CardTitle className="text-lg">{plant.name}</CardTitle>
-                  <CardDescription>{plant.location}</CardDescription>
-                </div>
-                <Badge className={getStatusColor(plant.status)}>
-                  {getStatusText(plant.status)}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex justify-between text-sm">
-                <span>Capacidade:</span>
-                <span className="font-mono">{plant.capacity} kW</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Geração Atual:</span>
-                <span className="font-mono text-green-400">
-                  {plant.currentPower} kW
-                </span>
-              </div>
-              
-              <div className="pt-4">
-                <h4 className="text-sm font-medium mb-3">Performance</h4>
-                <div className="flex justify-between">
-                  <PerformanceGauge 
-                    value={plant.dailyPerformance} 
-                    title="Diária"
-                    size={50}
-                  />
-                  <PerformanceGauge 
-                    value={plant.weeklyPerformance} 
-                    title="Semanal"
-                    size={50}
-                  />
-                  <PerformanceGauge 
-                    value={plant.monthlyPerformance} 
-                    title="Mensal"
-                    size={50}
-                  />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
     </div>
   );
 };

@@ -8,7 +8,8 @@ import {
   Settings, 
   Users, 
   AlertTriangle,
-  Puzzle
+  Puzzle,
+  MessageCircle
 } from 'lucide-react';
 import {
   Sidebar,
@@ -24,11 +25,11 @@ import {
 
 const menuItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
-  { title: 'Usinas', url: '/plants', icon: Zap },
   { title: 'Relatórios', url: '/reports', icon: FileText },
   { title: 'Instalações', url: '/installations', icon: Users },
   { title: 'Alertas', url: '/alerts', icon: AlertTriangle },
   { title: 'Integrações', url: '/integrations', icon: Puzzle },
+  { title: 'Chat', url: '/chat', icon: MessageCircle },
   { title: 'Configurações', url: '/settings', icon: Settings },
 ];
 

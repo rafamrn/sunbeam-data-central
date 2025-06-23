@@ -16,6 +16,7 @@ import Reports from "./pages/Reports";
 import Installations from "./pages/Installations";
 import Alerts from "./pages/Alerts";
 import Integrations from "./pages/Integrations";
+import Chat from "./pages/Chat";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -38,12 +39,12 @@ const ProtectedRoutes = () => {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/plants" element={<Navigate to="/dashboard" replace />} />
               <Route path="/plants/:id" element={<PlantDetail />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/installations" element={<Installations />} />
               <Route path="/alerts" element={<Alerts />} />
               <Route path="/integrations" element={<Integrations />} />
+              <Route path="/chat" element={<Chat />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
