@@ -43,6 +43,7 @@ const Dashboard = () => {
   const plantsInAlarm = plants.filter(p => p.status === 'alarm').length;
 
   const handlePlantClick = (plantId: string) => {
+    console.log('Navigating to plant:', plantId);
     navigate(`/plants/${plantId}`);
   };
 

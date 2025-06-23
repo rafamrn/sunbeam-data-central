@@ -46,6 +46,7 @@ const ProtectedRoutes = () => {
               <Route path="/alerts" element={<Alerts />} />
               <Route path="/integrations" element={<Integrations />} />
               <Route path="/chat" element={<Chat />} />
+              <Route path="/subscription" element={<Subscription />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
