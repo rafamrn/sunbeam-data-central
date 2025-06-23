@@ -42,6 +42,10 @@ const Dashboard = () => {
   const totalPlants = plants.length;
   const plantsInAlarm = plants.filter(p => p.status === 'alarm').length;
 
+  const handlePlantClick = (plantId: string) => {
+    navigate(`/plants/${plantId}`);
+  };
+
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
@@ -80,7 +84,7 @@ const Dashboard = () => {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Usinas Instaladas</CardTitle>
+            <CardTitle className="text-sm font-medium">Quantidade de Usinas Instaladas</CardTitle>
             <Building className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -148,12 +152,15 @@ const Dashboard = () => {
                 <TableHead>Capacidade</TableHead>
                 <TableHead>Potência Atual</TableHead>
                 <TableHead>Performance</TableHead>
-                <TableHead>Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filteredPlants.map((plant) => (
-                <TableRow key={plant.id} className="cursor-pointer hover:bg-muted/50">
+                <TableRow 
+                  key={plant.id} 
+                  className="cursor-pointer hover:bg-muted/50 transition-colors"
+                  onClick={() => handlePlantClick(plant.id)}
+                >
                   <TableCell className="font-medium">{plant.name}</TableCell>
                   <TableCell>{plant.location}</TableCell>
                   <TableCell>
@@ -181,14 +188,6 @@ const Dashboard = () => {
                         size={40}
                       />
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      size="sm"
-                      onClick={() => navigate(`/plants/${plant.id}`)}
-                    >
-                      Ver Detalhes
-                    </Button>
                   </TableCell>
                 </TableRow>
               ))}

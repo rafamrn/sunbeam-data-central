@@ -9,7 +9,8 @@ import {
   Users, 
   AlertTriangle,
   Puzzle,
-  MessageCircle
+  MessageCircle,
+  CreditCard
 } from 'lucide-react';
 import {
   Sidebar,
@@ -30,6 +31,7 @@ const menuItems = [
   { title: 'Alertas', url: '/alerts', icon: AlertTriangle },
   { title: 'Integrações', url: '/integrations', icon: Puzzle },
   { title: 'Chat', url: '/chat', icon: MessageCircle },
+  { title: 'Assinatura', url: '/subscription', icon: CreditCard },
   { title: 'Configurações', url: '/settings', icon: Settings },
 ];
 

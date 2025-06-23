@@ -17,6 +17,7 @@ import Installations from "./pages/Installations";
 import Alerts from "./pages/Alerts";
 import Integrations from "./pages/Integrations";
 import Chat from "./pages/Chat";
+import Subscription from "./pages/Subscription";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
