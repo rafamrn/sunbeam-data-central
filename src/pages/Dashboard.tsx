@@ -43,7 +43,6 @@ const Dashboard = () => {
   const plantsInAlarm = plants.filter(p => p.status === 'alarm').length;
 
   const handlePlantClick = (plantId: string) => {
-    console.log('Navigating to plant:', plantId);
     navigate(`/plants/${plantId}`);
   };
 
@@ -160,7 +159,10 @@ const Dashboard = () => {
                 <TableRow 
                   key={plant.id} 
                   className="cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => handlePlantClick(plant.id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handlePlantClick(plant.id);
+                  }}
                 >
                   <TableCell className="font-medium">{plant.name}</TableCell>
                   <TableCell>{plant.location}</TableCell>
